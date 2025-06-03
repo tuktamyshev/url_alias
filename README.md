@@ -28,7 +28,7 @@ This will:
 make infra
 
 # Run the application
-python -m url_alias
+make serve
 ```
 
 ### Docker Deployment

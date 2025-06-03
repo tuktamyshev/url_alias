@@ -28,7 +28,7 @@ class TestDeactivateInteractor:
         await self.interactor(self.url.uuid)
 
         self.url_repository.get_one_or_none.assert_awaited_once_with(uuid=self.url.uuid)
-        self.access_service.check_is_owner.assert_called_once_with(self.user.uuid, self.url)
+        self.access_service.check_is_owner.assert_called_once_with(self.user.uuid, self.url.user_uuid)
         self.url_repository.update.assert_awaited_once_with(self.url.uuid, is_active=False)
         self.transaction_manager.__aenter__.assert_called_once()
         self.transaction_manager.__aexit__.assert_called_once()
@@ -43,7 +43,7 @@ class TestDeactivateInteractor:
             await self.interactor(self.url.uuid)
 
         self.url_repository.get_one_or_none.assert_awaited_once_with(uuid=self.url.uuid)
-        self.access_service.check_is_owner.assert_called_once_with(other_user.uuid, self.url)
+        self.access_service.check_is_owner.assert_called_once_with(other_user.uuid, self.url.user_uuid)
         self.url_repository.update.assert_not_awaited()
         self.transaction_manager.__aenter__.assert_not_called()
         self.transaction_manager.__aexit__.assert_not_called()

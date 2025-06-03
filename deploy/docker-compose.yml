@@ -48,7 +48,7 @@ services:
     volumes:
       - ../src/:/app/src/
       - url_alias.api.logs:/app/logs
-      - url_alias.api.jwt_keys:/app/jwt_keys
+      - ../jwt_keys/:/app/jwt_keys/
     healthcheck:
       test:
         [
@@ -66,5 +66,3 @@ volumes:
     name: url_alias.postgres.data
   url_alias.api.logs:
     name: url_alias.api.logs
-  url_alias.api.jwt_keys:
-    name: url_alias.api.jwt_keys

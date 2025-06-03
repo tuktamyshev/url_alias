@@ -5,7 +5,7 @@ repos:
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
-        args: ["--strict", "--verbose", "feat,fix,docs,chore,style,refactor,test,build"]
+        args: [--strict, feat,fix,docs,chore,style,refactor,test,build]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

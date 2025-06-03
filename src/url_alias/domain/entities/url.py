@@ -12,7 +12,6 @@ class URLEntity(BaseEntity):
     alias: str
     is_active: bool
     expires_at: datetime
-    clicks_count: int
 
     @classmethod
     def create(cls, user_uuid: UUID, original_url: str, alias: str, expires_at: datetime) -> "URLEntity":
@@ -24,5 +23,4 @@ class URLEntity(BaseEntity):
             alias=alias,
             is_active=True,
             expires_at=expires_at,
-            clicks_count=0,
         )

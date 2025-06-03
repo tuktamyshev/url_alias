@@ -19,7 +19,8 @@ class URLInfoDTO(BaseModel):
     is_active: bool
     expires_at: datetime
     created_at: datetime
-    clicks_count: int
+    last_hour_clicks: int
+    last_day_clicks: int
 
 
 class URLListDTO(PaginatedResponseDTO[URLInfoDTO]):
@@ -35,5 +36,3 @@ class GetURLListDTO(PaginatedRequestDTO):
 @dataclass(frozen=True)
 class URLRepository(BaseRepository[URLEntity], ABC):
     def get_own_list(self, user_uuid: UUID, filters: GetURLListDTO) -> URLListDTO: ...
-
-    async def increment_click_counter(self, uuid: UUID) -> None: ...

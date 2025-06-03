@@ -5,6 +5,7 @@ import bcrypt
 import factory
 from faker import Faker
 
+from url_alias.domain.entities.click import ClickEntity
 from url_alias.domain.entities.url import URLEntity
 from url_alias.domain.entities.user import UserEntity
 
@@ -22,7 +23,6 @@ class URLEntityFactory(factory.Factory):
     alias = factory.LazyFunction(fake.word)
     is_active = factory.LazyFunction(fake.boolean)
     expires_at = factory.LazyFunction(lambda: datetime.now(UTC) + timedelta(hours=1))
-    clicks_count = factory.LazyFunction(fake.random_int)
 
 
 class UserEntityFactory(factory.Factory):
@@ -41,3 +41,11 @@ class UserEntityFactory(factory.Factory):
         salt = bcrypt.gensalt()
         pwd_bytes = pwd.encode("utf-8")
         self.hashed_password = bcrypt.hashpw(pwd_bytes, salt).decode("utf-8")
+
+class ClickEntityFactory(factory.Factory):
+    class Meta:
+        model = ClickEntity
+
+    uuid = factory.LazyFunction(uuid4)
+    url_uuid = factory.LazyFunction(uuid4)
+    created_at = factory.LazyFunction(lambda: datetime.now(UTC))

@@ -19,6 +19,7 @@ class PaginatedResponseDTO[IT](BaseModel):
 
 
 class URLSort(str, Enum):
-    created_at = "created_at"
-    clicks_count = "clicks_count"
     alias = "alias"
+    created_at = "created_at"
+    last_hour_clicks = "last_hour_clicks"
+    last_day_clicks = "last_day_clicks"

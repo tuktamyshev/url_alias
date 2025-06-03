@@ -21,7 +21,6 @@ url_table = sa.Table(
         sa.DateTime(timezone=True),
         nullable=False,
     ),
-    sa.Column("clicks_count", sa.Integer, nullable=False),
 )
 
 
@@ -36,6 +35,5 @@ def map_url_table() -> None:
             "alias": url_table.c.alias,
             "is_active": url_table.c.is_active,
             "expires_at": url_table.c.expires_at,
-            "clicks_count": url_table.c.clicks_count,
         },
     )

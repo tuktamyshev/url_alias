@@ -1,0 +1,70 @@
+name: url_alias
+
+x-default: &default
+  restart: unless-stopped
+  networks:
+    - backend
+
+x-healthcheck-interval: &hc-interval
+  interval: 30s
+  timeout: 60s
+  retries: 5
+  start_period: 10s
+
+services:
+  db:
+    <<: *default
+    profiles: [ "api" ]
+    container_name: url_alias.db
+    hostname: url_alias.db
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: $DB__PASSWORD
+      POSTGRES_USER: $DB__USER
+      POSTGRES_DB: $DB__NAME
+    ports:
+      - ${DB__PORT}:5432
+    volumes:
+      - url_alias.postgres.data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $DB__USER" ]
+      <<: *hc-interval
+
+  api:
+    <<: *default
+    profiles: [ "api" ]
+    container_name: url_alias.api
+    hostname: url_alias.api
+    build:
+      context: ..
+      dockerfile: ./deploy/url_alias/Dockerfile
+    env_file:
+      - ../env/.env.docker
+    ports:
+      - ${ASGI__UVICORN_PORT}:${ASGI__UVICORN_PORT}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ../src/:/app/src/
+      - url_alias.api.logs:/app/logs
+      - url_alias.api.jwt_keys:/app/jwt_keys
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsSL http://localhost:${ASGI__UVICORN_PORT}/v1/healthcheck",
+        ]
+      <<: *hc-interval
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  url_alias.postgres.data:
+    name: url_alias.postgres.data
+  url_alias.api.logs:
+    name: url_alias.api.logs
+  url_alias.api.jwt_keys:
+    name: url_alias.api.jwt_keys

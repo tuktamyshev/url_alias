@@ -1,0 +1,130 @@
+[build-system]
+requires = ["setuptools>=66.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = { attr = "url_alias.__version__" }
+
+[project]
+name = "url_alias"
+dynamic = ["version"]
+description = "URL alias"
+requires-python = ">=3.13"
+readme = "README.md"
+authors = [
+    { name = "timur" }
+]
+
+dependencies = [
+    # Web
+    "fastapi==0.115.12",
+    "uvicorn==0.34.3",
+    "orjson==3.10.18",
+    "pydantic-settings>=2.9.1",
+    "python-multipart>=0.0.20",
+    # Auth
+    "pyjwt[crypto]==2.10.1",
+    "bcrypt==4.3.0",
+    # Database
+    "alembic==1.15.2",
+    "sqlalchemy[asyncio]==2.0.41",
+    "asyncpg==0.30.0",
+    # Dependency injection
+    "dishka==1.6.0",
+    # Logging
+    "colorlog==6.9.0",
+    "python-json-logger>=3.3.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "coverage[toml]==7.8.0",
+    "pytest==8.3.5",
+    "pytest-asyncio==0.26.0",
+    "httpx==0.28.1",
+    "factory-boy>=3.3.3",
+]
+lint = [
+    "ruff==0.11.10",
+    "bandit==1.8.3",
+    "codespell==2.4.1",
+]
+dev = [
+    "url_alias[test,lint]",
+    "pre-commit==4.2.0",
+]
+
+[tool.pytest.ini_options]
+xfail_strict = true
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+
+[tool.ruff]
+src = ["src"]
+include = ["src/**.py", "tests/**.py"]
+target-version = "py313"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    'E',  # pycodestyle errors
+    'W',  # pycodestyle warnings
+    'F',  # pyflakes
+    'I',  # isort
+    'Q',  # quotes
+    'TID',  # tidy imports
+    'ANN',  # annotations
+    'B',  # bugbear
+    'SIM',  # simplify
+    "T",  # Pyright-inspired type checks
+]
+ignore = ['B008', 'B904', 'B007', 'SIM108', 'ANN401']
+
+[tool.ruff.lint.per-file-ignores]
+"src/url_alias/infrastructure/persistence/alembic/**" = ["ERA001", "INP001", "FBT001"]
+"tests/**" = ["S101", "S105"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint.isort]
+known-first-party = ["src", "tests"]
+no-lines-before = ["local-folder"]
+
+[tool.coverage.run]
+parallel = true
+branch = true
+concurrency = ["thread", "multiprocessing"]
+source = ["src", "tests"]
+omit = ["**/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+exclude_also = [
+    'if TYPE_CHECKING:',
+    "if __name__ == .__main__.:",
+    '@(abc\.)?abstractmethod',
+    "raise NotImplementedError",
+    "pass",
+    '\.\.\.',
+]
+omit = [
+    'src/url_alias/infrastructure/persistence/adapters/*.py',
+    'src/url_alias/infrastructure/persistence/alembic/env.py',
+    '*/__init__.py',
+]
+
+[tool.bandit]
+targets = "src"
+
+[tool.codespell]
+skip = "*.pyi,*.pyc,./site,*.log"

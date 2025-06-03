@@ -28,8 +28,6 @@ bootstrap:
 	@cp env/.env.dist env/.env.docker
 	@sed -i 's/^DB__HOST=localhost$$/DB__HOST=db/' env/.env.docker
 	@. ./deploy/url_alias/generate_jwt_keys.sh
-	@uv sync --extra dev
-	@. .venv/bin/activate
 	@pre-commit
 	@pre-commit install --hook-type commit-msg
 

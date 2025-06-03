@@ -8,6 +8,9 @@ You need: python3, make, uv(for local development), docker(for startup in docker
 
 1. Bootstrap the project:
 ```bash
+uv sync --extra dev
+source .venv/bin/activate
+
 make bootstrap
 ```
 
